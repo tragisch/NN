@@ -17,8 +17,11 @@ jobs:
           curl -sL https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-darwin-arm64 -o /usr/local/bin/bazel
           chmod +x /usr/local/bin/bazel
 
+      # Datasets (MNIST, Fashion-MNIST) are fetched by Bazel via http_file
+      # with SHA256 verification — see MODULE.bazel. CIFAR-10 (~170 MB)
+      # stays local-only and is not built in CI.
       - name: Build all targets
         run: bazel build //...
 
       - name: Run library tests
-        run: bazel test //app/nm_lib/... //examples/...
+        run: bazel test //app/nm_lib/...

@@ -19,6 +19,7 @@
 #include "nm_export_graphir.h"
 #include "nm_frontend.h"
 #include "sm.h"
+#include "mnist_data.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -63,18 +64,18 @@ int main(void) {
   if (s != NM_STATUS_OK) { fprintf(stderr, "export failed: %d\n", (int)s); return 1; }
   printf("Exported mnist_cnn.graphir.json\n");
 
-  /* Load 100 test images (same 784-float layout as MLP export) */
-  FILE *f = fopen("mnist_test_inputs.bin", "rb");
-  if (!f) { perror("inputs"); return 1; }
-  float *data = malloc(100 * 784 * sizeof(float));
-  if (fread(data, sizeof(float), 100 * 784, f) != 100 * 784) { fprintf(stderr, "short read\n"); return 1; }
-  fclose(f);
-  FILE *lf = fopen("mnist_test_labels.bin", "rb");
+  /* Load 100 test images via the IDX loader (data fetched by Bazel) */
+  FloatMatrix *X = load_mnist_images("examples/mnist/t10k-images-idx3-ubyte", 100);
+  if (!X) { fprintf(stderr, "load images failed\n"); return 1; }
+  FloatMatrix *Y = load_mnist_labels_onehot("examples/mnist/t10k-labels-idx1-ubyte", 100, 10);
+  if (!Y) { fprintf(stderr, "load labels failed\n"); return 1; }
   uint8_t labels[100];
-  if (fread(labels, 1, 100, lf) != 100) { fprintf(stderr, "short labels\n"); return 1; }
-  fclose(lf);
-
-  FloatMatrix *X = sm_create_with_values(100, 784, data);
+  for (size_t i = 0; i < 100; i++) {
+    size_t best = 0;
+    for (size_t c = 1; c < 10; c++)
+      if (Y->values[i * 10 + c] > Y->values[i * 10 + best]) best = c;
+    labels[i] = (uint8_t)best;
+  }
   FloatMatrix *pred = NULL;
   s = nm_engine_c_predict(engine, model, X, &pred);
   if (s != NM_STATUS_OK || !pred) { fprintf(stderr, "predict failed: %d\n", (int)s); return 1; }
@@ -101,7 +102,7 @@ int main(void) {
 
   sm_destroy(pred);
   sm_destroy(X);
-  free(data);
+  sm_destroy(Y);
   nm_engine_c_free(engine);
   nm_frontend_free(model);
   return 0;

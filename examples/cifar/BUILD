@@ -22,6 +22,9 @@ cc_binary(
       "data/data_batch_5.bin",
       "data/test_batch.bin",
     ],
+    # CIFAR-10 raw data (~170 MB) is not in git; download manually.
+    # Tagged manual so `bazel build //...` skips it in CI.
+    tags = ["manual"],
     deps = [
       "//app/nm_lib:nm_api",
       ":cifar_data",

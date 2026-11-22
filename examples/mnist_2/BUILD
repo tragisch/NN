@@ -1,23 +1,10 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
-exports_files([
-  "t10k-images-idx3-ubyte",
-  "t10k-labels-idx1-ubyte",
-  "train-images-idx3-ubyte",
-  "train-labels-idx1-ubyte",
-], visibility = ["//visibility:public"])
-
-
 cc_binary(
     name = "mnist",
     srcs = ["main.c"],
-    data = [
-        "t10k-images-idx3-ubyte",
-        "t10k-labels-idx1-ubyte",
-        "train-images-idx3-ubyte",
-        "train-labels-idx1-ubyte",
-    ],
+    data = ["//examples/mnist:mnist_data_files"],
     deps = [
         ":mnist_data",
         "//app/nm_lib:nm_engine_c",
@@ -32,12 +19,7 @@ cc_binary(
 cc_binary(
     name = "main_simple",
     srcs = ["main_simple.c"],
-    data = [
-        "t10k-images-idx3-ubyte",
-        "t10k-labels-idx1-ubyte",
-        "train-images-idx3-ubyte",
-        "train-labels-idx1-ubyte",
-    ],
+    data = ["//examples/mnist:mnist_data_files"],
     deps = [
         ":mnist_data",
         "//app/nm_lib:nm_engine_c",
@@ -64,11 +46,9 @@ cc_library(
 cc_binary(
     name = "bench_cnn",
     srcs = ["bench_cnn.c"],
-    data = [
-        "//:mnist_test_inputs.bin",
-        "//:mnist_test_labels.bin",
-    ],
+    data = ["//examples/mnist:mnist_data_files"],
     deps = [
+        ":mnist_data",
         "//app/nm_lib:nm_engine_c",
         "//app/nm_lib:nm_export_graphir",
         "//app/nm_lib:nm_frontend",
