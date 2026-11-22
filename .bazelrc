@@ -1,0 +1,44 @@
+
+# build for macOS ARM64 (Apple Silicon)
+build --platforms=//app/nm_lib:macos_arm64_platform
+
+# Bazel registries
+common --registry=https://raw.githubusercontent.com/tragisch/bazel-registry/main
+common --registry=https://bcr.bazel.build
+
+# ── Build profiles ────────────────────────────────────────────────
+# Default: production (optimised)
+build -c opt
+
+# Development: debug info + sanitizers, lldb-friendly
+#   usage: bazel build --config=dev //app/nm_lib:nm
+#   Avoids -c dbg (Bazel injects _FORTIFY_SOURCE causing redefinition warnings).
+#   Debug symbols (-g) and -O0 are set explicitly in nm_dev_copts.
+build:dev --define=NM_DEV=1
+build:dev --strip=never
+
+# Production: optimised, safe fast-math, benchmarks
+#   usage: bazel build --config=prod //app/nm_lib:nm   (same as default)
+build:prod -c opt
+
+# Build with Apple Accelerate framework for faster BLAS operations
+build --define=USE_ACCELERATE=1
+# Ensure the external mmatrix dependency also selects its Accelerate backend
+# on macOS; otherwise it falls back to its generic kernels.
+build --define=MATRIX_BACKEND=accelerate
+
+
+# Gcov config
+# build:gcov --copt -fprofile-arcs 
+# build:gcov --copt -ftest-coverage
+
+# test
+test --test_verbose_timeout_warnings 
+test --verbose_failures
+test --keep_going 
+test --test_output=all
+
+# coverage:
+coverage --instrument_test_targets
+coverage --instrumentation_filter="/tests[/test_:]" 
+coverage --combined_report=lcov 

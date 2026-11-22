@@ -1,0 +1,29 @@
+site_name: NN Library Documentation
+repo_url: https://github.com/tragisch/14_NN
+docs_dir: BAZEL_DOCS_DIR_PLACEHOLDER
+site_dir: site
+edit_uri: edit/main/
+theme:
+  name: material
+  features:
+    - navigation.path
+    - navigation.expand
+    - content.code.copy
+plugins:
+  - search
+  - glightbox
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
+  - pymdownx.snippets:
+      check_paths: true
+      base_path:
+        - "!relative"

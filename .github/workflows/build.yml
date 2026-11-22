@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bazelisk
+        run: |
+          curl -sL https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-darwin-arm64 -o /usr/local/bin/bazel
+          chmod +x /usr/local/bin/bazel
+
+      - name: Build all targets
+        run: bazel build //...
+
+      - name: Run library tests
+        run: bazel test //app/nm_lib/... //examples/...

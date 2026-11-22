@@ -1,0 +1,4 @@
+module NmLib [system] {
+  header "nm_api.h"
+  export *
+}
