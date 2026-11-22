@@ -34,7 +34,6 @@ docs(
 		"docs/api/optimization.md": "API / Optimization",
 		"docs/examples/mnist.md": "Examples / MNIST",
 		"docs/examples/regression.md": "Examples / Regression",
-		"docs/performance/backends.md": "Performance / Backends",
 		"docs/legacy/index.md": "Legacy / nm.h Overview",
 		"docs/legacy/lifecycle.md": "Legacy / Lifecycle",
 		"docs/legacy/training.md": "Legacy / Training & Inference",
@@ -43,7 +42,6 @@ docs(
 		"docs/legacy/metrics.md": "Legacy / Metrics",
 		"docs/legacy/serialization-nms3.md": "Legacy / Serialization (NMS3)",
 		"docs/legacy/mnist.md": "Legacy / MNIST",
-		"docs/faq.md": "FAQ",
 	},
 	visibility = ["//visibility:public"],
 )

@@ -48,10 +48,15 @@ StyleGuide.md
 *.bin
 *.aimodel
 *.graphir.json
+*.girw
 runner_bin
 combined_runner.rs
 mnist_generated.rs
 mnist_coreai.py
+
+# …but keep test fixtures tracked
+!app/nm_lib/tests/fixtures/**/*.graphir.json
+!app/nm_lib/tests/fixtures/**/*.girw
 
 # MNIST / Fashion-MNIST raw data (download locally, do not commit)
 examples/**/*-idx[13]-ubyte
